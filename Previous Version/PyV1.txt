@@ -1,0 +1,32 @@
+import numpy as np
+import cv2
+from matplotlib import pyplot as plt#cv2
+
+img = cv2.imread('messi.jpg',0)
+cv2.imshow('image',img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+print img
+#img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+#img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#hist = cv2.calcHist(img,[0],None,[256],[0,256])
+'''
+#matplotlib
+plt.figure()
+plt.title("Messi Histogram")
+plt.xlabel("Bins")
+plt.ylabel("# of Pixels")
+plt.plot(hist)
+plt.xlim([0, 256])
+plt.show()
+cv2.waitKey(0)
+'''
+
+
+color = ('b','g','r')
+for i,col in enumerate(color):
+    his = cv2.calcHist(img,[i],None,[256],[0,256])
+    plt.plot(his,color = col)
+    plt.xlim([0,256])
+plt.show()ssss

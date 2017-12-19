@@ -1,0 +1,64 @@
+import cv2
+import os
+import numpy as np
+from matplotlib import pyplot as plt#cv2
+
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+
+img = cv2.imread('face1.jpg')
+cv2.imshow('img',img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+minisize = (img.shape[1],img.shape[0])
+miniframe = cv2.resize(img, minisize)
+faces = face_cascade.detectMultiScale(miniframe)
+
+
+for f in faces:
+        x, y, w, h = [ v for v in f ]
+        cv2.rectangle(img, (x,y), (x+w,y+h), (255,255,255))
+        #Eye
+        #roi_gray = gray[y:y + h, x:x + w]
+        roi_color = img[y:y + h, x:x + w]
+
+        sub_face = img[y:y+h, x:x+w]
+        face_file_name = "face_crop.jpg"
+        cv2.imwrite(face_file_name, sub_face)
+        #
+        img2 = cv2.imread(face_file_name)
+        eyes = eye_cascade.detectMultiScale(roi_color)
+        for (ex, ey, ew, eh) in eyes:
+            i = 1;
+            cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
+            sub_eye = img2[ey:ey + eh, ex:ex + ew]
+            face_file_eye = "face_eye" + str(i) + ".jpg"
+            i = + 1
+            cv2.imwrite(face_file_eye, sub_eye)
+        #
+
+img1= cv2.imread(face_file_name)
+cv2.imshow("face_crop.jpg",img1)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#Histogram
+color = ('b','g','r')
+plt.title("Face 1")
+plt.xlabel("Bins")
+plt.ylabel("# of Pixels")
+for i,col in enumerate(color):
+    his = cv2.calcHist(img1, [i], None, [256], [0,256])
+    plt.plot(his,color = col)
+    plt.xlim([0,256])
+plt.show()
+print img1
+#
+img1= cv2.imread(face_file_eye)
+cv2.imshow("face_crop_eye.jpg",img1)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+os.remove(face_file_name)
+os.remove(face_file_eye)
+
